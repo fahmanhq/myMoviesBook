@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">My Movies Book</string>
+    <string name="movie_list_error_requesting_data">Failed getting movies</string>
+    <string name="generic_retry">Retry</string>
 </resources>
