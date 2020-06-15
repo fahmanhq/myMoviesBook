@@ -2,8 +2,8 @@ package labs.mamangkompii.mymoviesbook.usecase.model
 
 import labs.mamangkompii.mymoviesbook.di.annotation.Constants
 import labs.mamangkompii.mymoviesbook.di.annotation.QualifierKeys
-import labs.mamangkompii.mymoviesbook.gateway.remote.MovieAPIFactory
 import labs.mamangkompii.mymoviesbook.gateway.remote.model.MovieListResponse
+import labs.mamangkompii.mymoviesbook.gateway.remote.model.MovieReviewsResponse
 import org.joda.time.format.DateTimeFormatter
 import javax.inject.Inject
 
@@ -19,16 +19,26 @@ class ModelMapper @Inject constructor(
             if (it.isMinimumDataAcquired()) {
                 resultList.add(
                     MovieSummary(
-                        id = it.id!!,
-                        title = it.title!!,
-                        overview = it.overview,
-                        posterPath = it.posterPath?.run { posterBaseUrl + this },
-                        releaseDate = it.releaseDate?.let(movieReleaseDateTimeFormatter::parseDateTime)
+                        it.id!!,
+                        it.title!!,
+                        it.overview,
+                        it.posterPath?.run { posterBaseUrl + this },
+                        it.releaseDate?.let(movieReleaseDateTimeFormatter::parseDateTime)
                     )
                 )
             }
         }
 
         return resultList
+    }
+
+    fun map(movieReviewsResponse: MovieReviewsResponse): List<MovieReviewItem> {
+        return movieReviewsResponse.results?.map {
+            MovieReviewItem(
+                it.id!!,
+                it.author,
+                it.content
+            )
+        } ?: emptyList()
     }
 }

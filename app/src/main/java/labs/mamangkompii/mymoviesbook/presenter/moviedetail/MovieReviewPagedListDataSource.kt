@@ -1,27 +1,29 @@
-package labs.mamangkompii.mymoviesbook.presenter.movielist
+package labs.mamangkompii.mymoviesbook.presenter.moviedetail
 
 import androidx.paging.PageKeyedDataSource
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
-import labs.mamangkompii.mymoviesbook.usecase.model.MovieSummary
-import labs.mamangkompii.mymoviesbook.usecase.movielist.GetMovieListUseCase
+import labs.mamangkompii.mymoviesbook.presenter.movielist.LoadState
+import labs.mamangkompii.mymoviesbook.usecase.model.MovieReviewItem
+import labs.mamangkompii.mymoviesbook.usecase.moviedetail.GetMovieReviewsUseCase
 
-class MoviePagedListDataSource(
-    private val getMovieListUseCase: GetMovieListUseCase,
+class MovieReviewPagedListDataSource(
+    private val movieId: String,
+    private val getMovieReviewsUseCase: GetMovieReviewsUseCase,
     private val compositeDisposable: CompositeDisposable,
     private val loadStateSubject: PublishSubject<LoadState>,
     private val retryScheduler: Scheduler
-) : PageKeyedDataSource<Int, MovieSummary>() {
+) : PageKeyedDataSource<Int, MovieReviewItem>() {
 
     private var retry: (() -> Any)? = null
 
     override fun loadInitial(
         params: LoadInitialParams<Int>,
-        callback: LoadInitialCallback<Int, MovieSummary>
+        callback: LoadInitialCallback<Int, MovieReviewItem>
     ) {
         compositeDisposable.add(
-            getMovieListUseCase.getPopularMovies(1)
+            getMovieReviewsUseCase.getMovieReviews(movieId, 1)
                 .doOnSubscribe { loadStateSubject.onNext(LoadState.LoadingInitialData) }
                 .subscribe(
                     { collection ->
@@ -43,9 +45,9 @@ class MoviePagedListDataSource(
         )
     }
 
-    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, MovieSummary>) {
+    override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, MovieReviewItem>) {
         compositeDisposable.add(
-            getMovieListUseCase.getPopularMovies(params.key)
+            getMovieReviewsUseCase.getMovieReviews(movieId, params.key)
                 .doOnSubscribe { loadStateSubject.onNext(LoadState.LoadingMoreData) }
                 .subscribe(
                     { collection ->
@@ -67,7 +69,7 @@ class MoviePagedListDataSource(
         )
     }
 
-    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, MovieSummary>) {
+    override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, MovieReviewItem>) {
     }
 
     fun retryAllRequest() {

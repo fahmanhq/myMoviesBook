@@ -16,4 +16,5 @@ interface AppComponent {
     }
 
     fun movieListComponent(): MovieListComponent.Factory
+    fun movieDetailsComponent(): MovieDetailsComponent.Factory
 }

@@ -1,20 +1,14 @@
 package labs.mamangkompii.mymoviesbook.view.movielist
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
-import com.squareup.picasso.Picasso
 import labs.mamangkompii.mymoviesbook.R
 import labs.mamangkompii.mymoviesbook.usecase.model.MovieSummary
 import org.joda.time.format.DateTimeFormat
-import org.joda.time.format.DateTimeFormatter
 
-class MovieListItemAdapter :
+class MovieListItemAdapter(private var itemClickListener: ItemClickListener) :
     PagedListAdapter<MovieSummary, MovieSummaryViewHolder>(MovieSummaryDiffCallback) {
 
     private val dateTimeFormatter = DateTimeFormat.forPattern("dd MMM YYYY")
@@ -28,35 +22,7 @@ class MovieListItemAdapter :
 
     override fun onBindViewHolder(holder: MovieSummaryViewHolder, position: Int) {
         holder.bind(getItem(position))
-    }
-}
-
-class MovieSummaryViewHolder(
-    itemView: View,
-    private val dateTimeFormatter: DateTimeFormatter
-) : RecyclerView.ViewHolder(itemView) {
-
-    private val movieTitleLabel = itemView.findViewById<TextView>(R.id.movieTitleLabel)
-    private val movieReleaseDateLabel = itemView.findViewById<TextView>(R.id.movieReleaseDateLabel)
-    private val movieOverviewLabel = itemView.findViewById<TextView>(R.id.movieOverviewLabel)
-    private val moviePosterIV = itemView.findViewById<ImageView>(R.id.moviePosterIV)
-
-    fun bind(item: MovieSummary?) {
-        item?.let {
-            movieTitleLabel.text = it.title
-            movieReleaseDateLabel.text =
-                if (it.releaseDate != null) {
-                    dateTimeFormatter.print(it.releaseDate)
-                } else {
-                    ""
-                }
-            movieOverviewLabel.text = it.overview ?: ""
-            Picasso.get()
-                .load(it.posterPath)
-                .resizeDimen(R.dimen.movie_poster_thumbnail_dimen_width, R.dimen.movie_poster_thumbnail_dimen_height)
-                .centerCrop()
-                .into(moviePosterIV)
-        }
+        holder.itemView.setOnClickListener { itemClickListener.onClickMovie(getItem(position)) }
     }
 }
 
@@ -66,5 +32,8 @@ object MovieSummaryDiffCallback : DiffUtil.ItemCallback<MovieSummary>() {
 
     override fun areContentsTheSame(oldItem: MovieSummary, newItem: MovieSummary) =
         oldItem == newItem
+}
 
+interface ItemClickListener {
+    fun onClickMovie(item: MovieSummary?)
 }

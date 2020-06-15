@@ -1,11 +1,6 @@
 package labs.mamangkompii.mymoviesbook.gateway.remote.model
 
-class MovieListResponse(
-    var page: Int? = null,
-    var results: List<MovieListItemApiModel>? = null,
-    var totalResults: Int? = null,
-    var totalPages: Int? = null
-)
+class MovieListResponse : MovieDBListResponse<MovieListItemApiModel>()
 
 class MovieListItemApiModel {
     var id: String? = null
@@ -14,7 +9,7 @@ class MovieListItemApiModel {
     var posterPath: String? = null
     var releaseDate: String? = null
 
-    fun isMinimumDataAcquired() : Boolean {
+    fun isMinimumDataAcquired(): Boolean {
         return id != null && !title.isNullOrBlank()
     }
 }

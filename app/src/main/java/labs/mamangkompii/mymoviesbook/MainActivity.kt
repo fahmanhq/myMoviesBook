@@ -8,6 +8,8 @@ import com.google.android.material.snackbar.Snackbar
 import labs.mamangkompii.mymoviesbook.databinding.ActivityMainBinding
 import labs.mamangkompii.mymoviesbook.presenter.movielist.MovieListPresenter
 import labs.mamangkompii.mymoviesbook.usecase.model.MovieSummary
+import labs.mamangkompii.mymoviesbook.view.moviedetail.MovieDetailActivity
+import labs.mamangkompii.mymoviesbook.view.movielist.ItemClickListener
 import labs.mamangkompii.mymoviesbook.view.movielist.MovieListItemAdapter
 import labs.mamangkompii.mymoviesbook.view.movielist.MovieListView
 import javax.inject.Inject
@@ -36,13 +38,23 @@ class MainActivity : AppCompatActivity(), MovieListView {
     }
 
     private fun setupMovieListRecyclerView() {
-        movieListAdapter = MovieListItemAdapter()
+        movieListAdapter = MovieListItemAdapter(
+            object : ItemClickListener {
+                override fun onClickMovie(item: MovieSummary?) {
+                    item?.let { startMovieDetailActivity(it) }
+                }
+            }
+        )
         vBinding.movieListRV.apply {
             layoutManager = LinearLayoutManager(this@MainActivity)
             adapter = movieListAdapter
         }
 
         movieListPresenter.setupMovieListDataSource()
+    }
+
+    private fun startMovieDetailActivity(movieSummary: MovieSummary) {
+        MovieDetailActivity.start(this, movieSummary.id, movieSummary)
     }
 
     override fun updateMovieList(pagedList: PagedList<MovieSummary>) {

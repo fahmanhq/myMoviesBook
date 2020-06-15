@@ -8,6 +8,7 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import labs.mamangkompii.mymoviesbook.di.annotation.ActivityScope
 import labs.mamangkompii.mymoviesbook.di.annotation.ComputationScheduler
+import labs.mamangkompii.mymoviesbook.di.annotation.Named
 import labs.mamangkompii.mymoviesbook.presenter.movielist.MovieListPresenter
 import labs.mamangkompii.mymoviesbook.presenter.movielist.MovieListPresenterImpl
 import labs.mamangkompii.mymoviesbook.presenter.movielist.MoviePagedListDataSourceFactory
@@ -42,21 +43,5 @@ interface MovieListModule {
                 scheduler
             )
         }
-
-        @Provides
-        fun movieReleaseDateTimeFormatter(): DateTimeFormatter {
-            return DateTimeFormat.forPattern("YYYY-MM-dd")
-        }
-
-//        @Provides
-//        @ActivityScope
-//        fun providePresenter(view: MovieListView) {
-//            return MovieListPresenterImpl(
-//                view,
-//                pagedListDataSourceFactory,
-//                getMovieListUseCase,
-//
-//            )
-//        }
     }
 }

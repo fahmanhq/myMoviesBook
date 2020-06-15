@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view.moviedetail.MovieDetailActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/moviePosterIV"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/movie_poster_detail_dimen_height"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+            <TextView
+                android:id="@+id/movieTitleLabel"
+                style="@style/AppTheme.TextAppearance.MovieItem.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintStart_toStartOf="@+id/leftGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/moviePosterIV"
+                tools:text="@tools:sample/lorem[3]" />
+
+            <TextView
+                android:id="@+id/movieReviewBtn"
+                style="@style/TextAppearance.AppCompat.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/movie_review_side_navigation_background"
+                android:paddingLeft="16dp"
+                android:paddingTop="8dp"
+                android:paddingRight="12dp"
+                android:paddingBottom="8dp"
+                android:text="See Movie Reviews"
+                android:textColor="@color/white"
+                android:textSize="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/moviePosterIV" />
+
+            <TextView
+                android:id="@+id/movieReleaseDateLabel"
+                style="@style/AppTheme.TextAppearance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:layout_constraintStart_toStartOf="@+id/leftGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/movieTitleLabel"
+                tools:text="@tools:sample/date/ddmmyy" />
+
+            <TextView
+                android:id="@+id/movieOverviewLabel"
+                style="@style/AppTheme.TextAppearance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:lineSpacingMultiplier="1.2"
+                app:layout_constraintEnd_toStartOf="@+id/rightGuideline"
+                app:layout_constraintStart_toStartOf="@+id/leftGuideline"
+                app:layout_constraintTop_toBottomOf="@+id/movieReleaseDateLabel"
+                tools:text="@tools:sample/lorem/random" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/leftGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="20dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/rightGuideline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="20dp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+    <include
+        android:id="@+id/reviewBottomSheet"
+        layout="@layout/movie_detail_review_bottom_sheet"
+        tools:visibility="gone" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

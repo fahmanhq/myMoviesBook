@@ -6,5 +6,5 @@ sealed class LoadState {
     object InitialLoadFinished : LoadState()
     object LoadMoreFinished : LoadState()
     object NoLoadMoreRemaining : LoadState()
-    class Error(val previousLoadState: LoadState, val throwable: Throwable) : LoadState()
+    object Error : LoadState()
 }

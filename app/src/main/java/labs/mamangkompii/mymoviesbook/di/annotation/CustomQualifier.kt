@@ -22,4 +22,13 @@ annotation class MainScheduler
 @Retention(value = AnnotationRetention.RUNTIME)
 annotation class Constants(val value: String)
 
+@Qualifier
+@MustBeDocumented
+@Retention(value = AnnotationRetention.RUNTIME)
+annotation class Params(val value: String)
+
+@Qualifier
+@MustBeDocumented
+@Retention(value = AnnotationRetention.RUNTIME)
+annotation class Named(val value: String)
 
