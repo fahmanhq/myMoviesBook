@@ -1,20 +1,19 @@
-package labs.mamangkompii.mymoviesbook
+package labs.mamangkompii.mymoviesbook.view.movielist
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
+import labs.mamangkompii.mymoviesbook.MyApplication
+import labs.mamangkompii.mymoviesbook.R
 import labs.mamangkompii.mymoviesbook.databinding.ActivityMainBinding
 import labs.mamangkompii.mymoviesbook.presenter.movielist.MovieListPresenter
 import labs.mamangkompii.mymoviesbook.usecase.model.MovieSummary
 import labs.mamangkompii.mymoviesbook.view.moviedetail.MovieDetailActivity
-import labs.mamangkompii.mymoviesbook.view.movielist.ItemClickListener
-import labs.mamangkompii.mymoviesbook.view.movielist.MovieListItemAdapter
-import labs.mamangkompii.mymoviesbook.view.movielist.MovieListView
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity(), MovieListView {
+class MovieListActivity : AppCompatActivity(), MovieListView {
 
     private lateinit var vBinding: ActivityMainBinding
     private lateinit var movieListAdapter: MovieListItemAdapter
@@ -46,7 +45,7 @@ class MainActivity : AppCompatActivity(), MovieListView {
             }
         )
         vBinding.movieListRV.apply {
-            layoutManager = LinearLayoutManager(this@MainActivity)
+            layoutManager = LinearLayoutManager(this@MovieListActivity)
             adapter = movieListAdapter
         }
 

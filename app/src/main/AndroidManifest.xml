@@ -16,7 +16,7 @@
             android:name=".view.moviedetail.MovieDetailActivity"
             android:screenOrientation="nosensor" />
         <activity
-            android:name=".MainActivity"
+            android:name=".view.movielist.MovieListActivity"
             android:screenOrientation="nosensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
