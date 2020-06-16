@@ -37,4 +37,15 @@
         android:paddingBottom="20dp"
         android:text="Now Playing" />
 
+    <TextView
+        android:id="@+id/favoriteMenu"
+        style="@style/TextAppearance.AppCompat.Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:text="My Favorites" />
+
 </LinearLayout>

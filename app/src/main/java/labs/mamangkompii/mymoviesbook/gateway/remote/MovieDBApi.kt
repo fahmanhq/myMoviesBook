@@ -1,6 +1,5 @@
 package labs.mamangkompii.mymoviesbook.gateway.remote
 
-import io.reactivex.Observable
 import io.reactivex.Single
 import labs.mamangkompii.mymoviesbook.gateway.remote.model.MovieDetailApiModel
 import labs.mamangkompii.mymoviesbook.gateway.remote.model.MovieListResponse
@@ -12,13 +11,13 @@ import retrofit2.http.Query
 interface MovieDBApi {
 
     @GET("movie/popular")
-    fun getPopularMovies(@Query("page") page: Int? = 1): Observable<MovieListResponse>
+    fun getPopularMovies(@Query("page") page: Int? = 1): Single<MovieListResponse>
 
     @GET("movie/top_rated")
-    fun getTopRatedMovies(@Query("page") page: Int? = 1): Observable<MovieListResponse>
+    fun getTopRatedMovies(@Query("page") page: Int? = 1): Single<MovieListResponse>
 
     @GET("movie/now_playing")
-    fun getNowPlayingMovies(@Query("page") page: Int? = 1): Observable<MovieListResponse>
+    fun getNowPlayingMovies(@Query("page") page: Int? = 1): Single<MovieListResponse>
 
     @GET("movie/{movieId}")
     fun getMovieDetails(@Path("movieId") movieId: Int): Single<MovieDetailApiModel>

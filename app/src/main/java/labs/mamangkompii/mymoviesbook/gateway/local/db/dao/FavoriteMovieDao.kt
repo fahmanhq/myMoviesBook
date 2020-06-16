@@ -17,6 +17,9 @@ interface FavoriteMovieDao {
     @Query("SELECT * FROM movie_summary ORDER BY title DESC")
     fun getAllMovies(): Single<List<MovieSummaryEntity>>
 
+    @Query("SELECT * FROM movie_summary ORDER BY title ASC LIMIT :limit OFFSET :offset")
+    fun getMoviesByPaging(limit: Int, offset: Int): Single<List<MovieSummaryEntity>>
+
     @Query("SELECT * FROM movie_summary WHERE movie_id = :movieId")
-    fun getMovies(movieId: Int): Single<MovieSummaryEntity>
+    fun getMovie(movieId: Int): Single<MovieSummaryEntity>
 }

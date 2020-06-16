@@ -21,7 +21,7 @@ class GetMovieDetailUseCaseImpl @Inject constructor(
             .observeOn(compScheduler)
             .map { apiToDomainModelMapper.map(it) }
             .flatMap { movieDetail ->
-                favoriteMovieDao.getMovies(movieId)
+                favoriteMovieDao.getMovie(movieId)
                     .map { movieDetail.apply { isFavorited = true } }
                     .onErrorReturnItem(movieDetail)
             }

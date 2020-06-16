@@ -33,6 +33,9 @@ class MovieListCategoryBottomDialogFragment : BottomSheetDialogFragment() {
         vBinding.nowPlayingMenu.setOnClickListener {
             onCategoryPicked(MovieListCategory.NowPlaying)
         }
+        vBinding.favoriteMenu.setOnClickListener {
+            onCategoryPicked(MovieListCategory.Favorite)
+        }
 
         return vBinding.root
     }

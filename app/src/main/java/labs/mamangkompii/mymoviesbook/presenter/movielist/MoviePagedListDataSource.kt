@@ -3,6 +3,7 @@ package labs.mamangkompii.mymoviesbook.presenter.movielist
 import androidx.paging.PageKeyedDataSource
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import io.reactivex.Single
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import labs.mamangkompii.mymoviesbook.usecase.model.MovieListCategory
@@ -24,7 +25,7 @@ class MoviePagedListDataSource(
         callback: LoadInitialCallback<Int, MovieSummary>
     ) {
         compositeDisposable.add(
-            getMovieListStream(1)
+            getMovieListStream(1, params.requestedLoadSize)
                 .doOnSubscribe { loadStateSubject.onNext(LoadState.LoadingInitialData) }
                 .subscribe(
                     { collection ->
@@ -48,7 +49,7 @@ class MoviePagedListDataSource(
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, MovieSummary>) {
         compositeDisposable.add(
-            getMovieListStream(params.key)
+            getMovieListStream(params.key, params.requestedLoadSize)
                 .doOnSubscribe { loadStateSubject.onNext(LoadState.LoadingMoreData) }
                 .subscribe(
                     { collection ->
@@ -73,11 +74,12 @@ class MoviePagedListDataSource(
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, MovieSummary>) {
     }
 
-    private fun getMovieListStream(pageIndex: Int): Observable<List<MovieSummary>> {
+    private fun getMovieListStream(pageIndex: Int, numOfRequestedData: Int): Single<List<MovieSummary>> {
         return when (movieListCategory) {
             MovieListCategory.Popular -> getMovieListUseCase.getPopularMovies(pageIndex)
             MovieListCategory.TopRated -> getMovieListUseCase.getTopRatedMovies(pageIndex)
             MovieListCategory.NowPlaying -> getMovieListUseCase.getNowPlayingMovies(pageIndex)
+            MovieListCategory.Favorite -> getMovieListUseCase.getFavorites(pageIndex, numOfRequestedData)
         }
     }
 
