@@ -5,6 +5,7 @@ import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import labs.mamangkompii.mymoviesbook.usecase.model.MovieListCategory
 import labs.mamangkompii.mymoviesbook.usecase.model.MovieSummary
 import labs.mamangkompii.mymoviesbook.usecase.movielist.GetMovieListUseCase
 
@@ -16,9 +17,13 @@ class MoviePagedListDataSourceFactory(
 ) : DataSource.Factory<Int, MovieSummary>() {
 
     private var cachedDataSource: MoviePagedListDataSource? = null
+    private var movieListCategory: MovieListCategory = MovieListCategory.Popular
 
     override fun create(): DataSource<Int, MovieSummary> {
+        compositeDisposable.clear()
+
         cachedDataSource = MoviePagedListDataSource(
+            movieListCategory,
             getMovieListUseCase,
             compositeDisposable,
             loadStateSubject,
@@ -34,5 +39,12 @@ class MoviePagedListDataSourceFactory(
 
     fun dispose() {
         compositeDisposable.dispose()
+    }
+
+    fun changeCategory(movieListCategory: MovieListCategory) {
+        if (this.movieListCategory != movieListCategory) {
+            this.movieListCategory = movieListCategory
+            cachedDataSource?.invalidate()
+        }
     }
 }

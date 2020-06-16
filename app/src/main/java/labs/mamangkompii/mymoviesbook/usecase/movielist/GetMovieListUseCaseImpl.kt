@@ -19,4 +19,16 @@ class GetMovieListUseCaseImpl @Inject constructor(
             .observeOn(compScheduler)
             .map { apiToDomainModelMapper.map(it) }
     }
+
+    override fun getTopRatedMovies(pageIndex: Int): Observable<List<MovieSummary>> {
+        return movieDBApi.getTopRatedMovies(pageIndex)
+            .observeOn(compScheduler)
+            .map { apiToDomainModelMapper.map(it) }
+    }
+
+    override fun getNowPlayingMovies(pageIndex: Int): Observable<List<MovieSummary>> {
+        return movieDBApi.getNowPlayingMovies(pageIndex)
+            .observeOn(compScheduler)
+            .map { apiToDomainModelMapper.map(it) }
+    }
 }

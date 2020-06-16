@@ -45,7 +45,7 @@ class MovieListPresenterImpl @Inject constructor(
     }
 
     override fun changeMovieListCategory(movieListCategory: MovieListCategory) {
-        TODO("Not yet implemented")
+        moviePagedListDataSourceFactory.changeCategory(movieListCategory)
     }
 
     override fun retryFetchData() {

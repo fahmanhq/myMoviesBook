@@ -218,6 +218,7 @@ class MovieDetailActivity : AppCompatActivity(), MovieDetailView, MovieReviewsVi
 
     override fun onDestroy() {
         super.onDestroy()
+        movieDetailPresenter.onDestroy()
         movieReviewPresenter.onDestroy()
     }
 }

@@ -9,11 +9,12 @@ import labs.mamangkompii.mymoviesbook.MyApplication
 import labs.mamangkompii.mymoviesbook.R
 import labs.mamangkompii.mymoviesbook.databinding.ActivityMainBinding
 import labs.mamangkompii.mymoviesbook.presenter.movielist.MovieListPresenter
+import labs.mamangkompii.mymoviesbook.usecase.model.MovieListCategory
 import labs.mamangkompii.mymoviesbook.usecase.model.MovieSummary
 import labs.mamangkompii.mymoviesbook.view.moviedetail.MovieDetailActivity
 import javax.inject.Inject
 
-class MovieListActivity : AppCompatActivity(), MovieListView {
+class MovieListActivity : AppCompatActivity(), MovieListView, MovieListCategoryBottomDialogFragment.InteractionListener {
 
     private lateinit var vBinding: ActivityMainBinding
     private lateinit var movieListAdapter: MovieListItemAdapter
@@ -34,6 +35,7 @@ class MovieListActivity : AppCompatActivity(), MovieListView {
         setContentView(vBinding.root)
 
         setupMovieListRecyclerView()
+        initClickListener()
     }
 
     private fun setupMovieListRecyclerView() {
@@ -56,6 +58,12 @@ class MovieListActivity : AppCompatActivity(), MovieListView {
         MovieDetailActivity.start(this, movieSummary.id, movieSummary)
     }
 
+    private fun initClickListener() {
+        vBinding.movieListCategoryPickerBtn.setOnClickListener {
+            MovieListCategoryBottomDialogFragment().show(supportFragmentManager, MovieListCategoryBottomDialogFragment.TAG)
+        }
+    }
+
     override fun updateMovieList(pagedList: PagedList<MovieSummary>) {
         movieListAdapter.submitList(pagedList)
     }
@@ -68,5 +76,9 @@ class MovieListActivity : AppCompatActivity(), MovieListView {
         )
         retrySnackbar!!.setAction(R.string.generic_retry) { movieListPresenter.retryFetchData() }
         retrySnackbar!!.show()
+    }
+
+    override fun onPickMovieListCategory(movieListCategory: MovieListCategory) {
+        movieListPresenter.changeMovieListCategory(movieListCategory)
     }
 }

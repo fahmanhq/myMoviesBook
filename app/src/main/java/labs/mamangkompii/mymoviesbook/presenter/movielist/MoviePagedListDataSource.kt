@@ -1,13 +1,16 @@
 package labs.mamangkompii.mymoviesbook.presenter.movielist
 
 import androidx.paging.PageKeyedDataSource
+import io.reactivex.Observable
 import io.reactivex.Scheduler
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
+import labs.mamangkompii.mymoviesbook.usecase.model.MovieListCategory
 import labs.mamangkompii.mymoviesbook.usecase.model.MovieSummary
 import labs.mamangkompii.mymoviesbook.usecase.movielist.GetMovieListUseCase
 
 class MoviePagedListDataSource(
+    private val movieListCategory: MovieListCategory,
     private val getMovieListUseCase: GetMovieListUseCase,
     private val compositeDisposable: CompositeDisposable,
     private val loadStateSubject: PublishSubject<LoadState>,
@@ -21,7 +24,7 @@ class MoviePagedListDataSource(
         callback: LoadInitialCallback<Int, MovieSummary>
     ) {
         compositeDisposable.add(
-            getMovieListUseCase.getPopularMovies(1)
+            getMovieListStream(1)
                 .doOnSubscribe { loadStateSubject.onNext(LoadState.LoadingInitialData) }
                 .subscribe(
                     { collection ->
@@ -45,7 +48,7 @@ class MoviePagedListDataSource(
 
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, MovieSummary>) {
         compositeDisposable.add(
-            getMovieListUseCase.getPopularMovies(params.key)
+            getMovieListStream(params.key)
                 .doOnSubscribe { loadStateSubject.onNext(LoadState.LoadingMoreData) }
                 .subscribe(
                     { collection ->
@@ -68,6 +71,14 @@ class MoviePagedListDataSource(
     }
 
     override fun loadBefore(params: LoadParams<Int>, callback: LoadCallback<Int, MovieSummary>) {
+    }
+
+    private fun getMovieListStream(pageIndex: Int): Observable<List<MovieSummary>> {
+        return when (movieListCategory) {
+            MovieListCategory.Popular -> getMovieListUseCase.getPopularMovies(pageIndex)
+            MovieListCategory.TopRated -> getMovieListUseCase.getTopRatedMovies(pageIndex)
+            MovieListCategory.NowPlaying -> getMovieListUseCase.getNowPlayingMovies(pageIndex)
+        }
     }
 
     fun retryAllRequest() {
