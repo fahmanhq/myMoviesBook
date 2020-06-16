@@ -1,6 +1,5 @@
 package labs.mamangkompii.mymoviesbook.presenter.moviedetail
 
-import android.util.Log
 import androidx.paging.PagedList
 import androidx.paging.RxPagedListBuilder
 import io.reactivex.Scheduler

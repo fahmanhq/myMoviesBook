@@ -1,7 +1,12 @@
 package labs.mamangkompii.mymoviesbook.presenter.moviedetail
 
-interface MovieDetailPresenter {
+import labs.mamangkompii.mymoviesbook.presenter.BasePresenter
 
-    fun requestDetail(movieId: String)
+interface MovieDetailPresenter : BasePresenter {
+
+    fun requestDetail(movieId: Int)
+    fun addMovieAsFavorite()
+    fun removeMovieFromFavorite()
+    fun onFavoriteButtonClick()
 
 }

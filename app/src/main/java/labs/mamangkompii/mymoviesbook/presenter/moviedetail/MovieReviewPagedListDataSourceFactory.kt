@@ -10,7 +10,7 @@ import labs.mamangkompii.mymoviesbook.usecase.model.MovieReviewItem
 import labs.mamangkompii.mymoviesbook.usecase.moviedetail.GetMovieReviewsUseCase
 
 class MovieReviewPagedListDataSourceFactory(
-    private val movieId: String,
+    private val movieId: Int,
     private val getMovieReviewsUseCase: GetMovieReviewsUseCase,
     private val compositeDisposable: CompositeDisposable,
     val loadStateSubject: PublishSubject<LoadState>,

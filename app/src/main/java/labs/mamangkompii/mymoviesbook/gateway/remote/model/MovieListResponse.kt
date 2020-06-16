@@ -1,9 +1,9 @@
 package labs.mamangkompii.mymoviesbook.gateway.remote.model
 
-class MovieListResponse : MovieDBListResponse<MovieListItemApiModel>()
+class MovieListResponse : MovieDBListResponse<MovieDetailApiModel>()
 
-class MovieListItemApiModel {
-    var id: String? = null
+class MovieDetailApiModel {
+    var id: Int? = null
     var title: String? = null
     var overview: String? = null
     var posterPath: String? = null

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -14,13 +15,15 @@ import com.squareup.picasso.Picasso
 import labs.mamangkompii.mymoviesbook.MyApplication
 import labs.mamangkompii.mymoviesbook.R
 import labs.mamangkompii.mymoviesbook.databinding.ActivityMovieDetailBinding
+import labs.mamangkompii.mymoviesbook.presenter.moviedetail.MovieDetailPresenter
 import labs.mamangkompii.mymoviesbook.presenter.moviedetail.MovieReviewPresenter
+import labs.mamangkompii.mymoviesbook.usecase.model.MovieDetail
 import labs.mamangkompii.mymoviesbook.usecase.model.MovieReviewItem
 import labs.mamangkompii.mymoviesbook.usecase.model.MovieSummary
 import org.joda.time.format.DateTimeFormat
 import javax.inject.Inject
 
-class MovieDetailActivity : AppCompatActivity(), MovieReviewsView {
+class MovieDetailActivity : AppCompatActivity(), MovieDetailView, MovieReviewsView {
 
     companion object {
         private const val EXTRA_KEY_MOVIE_ID = "movieId"
@@ -29,7 +32,7 @@ class MovieDetailActivity : AppCompatActivity(), MovieReviewsView {
         @JvmStatic
         fun start(
             context: Context,
-            movieId: String,
+            movieId: Int,
             movieSummary: MovieSummary
         ) {
             val starter = Intent(context, MovieDetailActivity::class.java)
@@ -39,6 +42,7 @@ class MovieDetailActivity : AppCompatActivity(), MovieReviewsView {
         }
     }
 
+    private var movieId: Int = 0
     private var posterHeight: Int = 0
 
     private lateinit var vBinding: ActivityMovieDetailBinding
@@ -48,12 +52,15 @@ class MovieDetailActivity : AppCompatActivity(), MovieReviewsView {
     private lateinit var sheetBehavior: BottomSheetBehavior<View>
 
     @Inject
+    lateinit var movieDetailPresenter: MovieDetailPresenter
+
+    @Inject
     lateinit var movieReviewPresenter: MovieReviewPresenter
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val movieId = intent.extras!!.getString(EXTRA_KEY_MOVIE_ID)!!
+        movieId = intent.extras!!.getInt(EXTRA_KEY_MOVIE_ID)
         (application as MyApplication).appComponent.movieDetailsComponent()
-            .create(this, movieId)
+            .create(this, this, movieId)
             .inject(this)
         super.onCreate(savedInstanceState)
 
@@ -61,43 +68,14 @@ class MovieDetailActivity : AppCompatActivity(), MovieReviewsView {
         setContentView(vBinding.root)
 
         initResources(resources)
-        renderTemporarySummary()
         initUI()
         initActionListener()
+
+        movieDetailPresenter.requestDetail(movieId)
     }
 
     private fun initResources(resources: Resources) {
         posterHeight = resources.getDimensionPixelSize(R.dimen.movie_poster_thumbnail_dimen_height)
-    }
-
-    private fun renderTemporarySummary() {
-        val movieSummary = intent.extras?.getSerializable(EXTRA_KEY_MOVIE_SUMMARY) as MovieSummary?
-        if (movieSummary != null) {
-            renderMovieSummary(movieSummary)
-        }
-    }
-
-    private fun renderMovieSummary(movieSummary: MovieSummary) {
-        vBinding.movieTitleLabel.text = movieSummary.title
-        vBinding.movieReleaseDateLabel.text =
-            if (movieSummary.releaseDate != null) {
-                dateTimeFormatter.print(movieSummary.releaseDate)
-            } else {
-                ""
-            }
-        vBinding.movieOverviewLabel.text = movieSummary.overview ?: ""
-        renderPosterImage(movieSummary.posterPath)
-    }
-
-    private fun renderPosterImage(posterImageUrl: String?) {
-        Picasso.get()
-            .load(posterImageUrl)
-            .resize(
-                findViewById<View>(android.R.id.content).width,
-                posterHeight
-            )
-            .centerCrop()
-            .into(vBinding.moviePosterIV)
     }
 
     private fun initUI() {
@@ -125,6 +103,10 @@ class MovieDetailActivity : AppCompatActivity(), MovieReviewsView {
             movieReviewPresenter.retryRequestReview()
             vBinding.reviewBottomSheet.retryLoadReviewsButton.visibility = View.GONE
         }
+
+        vBinding.favoriteButton.setOnClickListener {
+            movieDetailPresenter.onFavoriteButtonClick()       
+        }
     }
 
     override fun showEmptyPlaceholderIfNeeded() {
@@ -151,11 +133,91 @@ class MovieDetailActivity : AppCompatActivity(), MovieReviewsView {
         Toast.makeText(this, "Error Getting Review", Toast.LENGTH_SHORT).show()
     }
 
+    override fun showLoadingMovieDetail() {
+        // todo : show loading
+        Log.d("HQ", "showLoadingMovieDetail")
+    }
+
+    override fun showMovieDetail(movieDetail: MovieDetail) {
+        vBinding.movieTitleLabel.text = movieDetail.title
+        vBinding.movieReleaseDateLabel.text =
+            if (movieDetail.releaseDate != null) {
+                dateTimeFormatter.print(movieDetail.releaseDate)
+            } else {
+                ""
+            }
+        vBinding.movieOverviewLabel.text = movieDetail.overview ?: ""
+        renderPosterImage(movieDetail.posterPath)
+    }
+
+    private fun renderPosterImage(posterImageUrl: String?) {
+        Picasso.get()
+            .load(posterImageUrl)
+            .resize(
+                findViewById<View>(android.R.id.content).width,
+                posterHeight
+            )
+            .centerCrop()
+            .into(vBinding.moviePosterIV)
+    }
+
+    override fun showErrorGettingMovieDetail() {
+        // todo : show error page & retry button
+        Log.d("HQ", "showErrorGettingMovieDetail")
+    }
+
+    override fun disableFavoriteButton() {
+        vBinding.favoriteButton.isEnabled = false
+    }
+
+    override fun enableFavoriteButton() {
+        vBinding.favoriteButton.isEnabled = true
+    }
+
+    override fun toggleFavoriteState(isFavorited: Boolean) {
+        toggleFavoriteButton(isFavorited)
+    }
+
+    private fun toggleFavoriteButton(isFavorited: Boolean) {
+        vBinding.favoriteButton.setImageResource(
+            if (isFavorited) R.drawable.ic_favorite else R.drawable.ic_unfavorite
+        )
+        vBinding.favoriteButton.tag = isFavorited
+    }
+
+    override fun showErrorAddMovieAsFavorite() {
+        Toast.makeText(
+            this,
+            "Can't add this movie as favorite, please try again",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    override fun showErrorRemoveMovieFromFavorite() {
+        Toast.makeText(
+            this,
+            "Can't remove this movie from favorite, please try again",
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
+    override fun showAllWidget() {
+        vBinding.run {
+            favoriteButton.visibility = View.VISIBLE
+            movieReviewBtn.visibility = View.VISIBLE
+        }
+    }
+
     override fun onBackPressed() {
         if (sheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
             sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         } else {
             super.onBackPressed()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        movieReviewPresenter.onDestroy()
     }
 }

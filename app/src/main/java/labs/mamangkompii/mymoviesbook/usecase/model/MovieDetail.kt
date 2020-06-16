@@ -3,11 +3,11 @@ package labs.mamangkompii.mymoviesbook.usecase.model
 import org.joda.time.DateTime
 import java.io.Serializable
 
-data class MovieSummary(
+data class MovieDetail(
     var id: Int,
     var title: String,
     var overview: String?,
     var posterPath: String?,
     var releaseDate: DateTime?,
-    val isFavorited: Boolean = false
+    var isFavorited: Boolean = false
 ) : Serializable

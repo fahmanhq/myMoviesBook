@@ -22,6 +22,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@tools:sample/backgrounds/scenic" />
 
+            <ImageButton
+                android:id="@+id/favoriteButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:layout_marginRight="16dp"
+                android:background="@null"
+                android:contentDescription="Favorite / Unfavorite Button"
+                android:src="@drawable/ic_favorite"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
+
             <TextView
                 android:id="@+id/movieTitleLabel"
                 style="@style/AppTheme.TextAppearance.MovieItem.Title"
@@ -46,8 +61,10 @@
                 android:text="See Movie Reviews"
                 android:textColor="@color/white"
                 android:textSize="12dp"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/moviePosterIV" />
+                app:layout_constraintTop_toBottomOf="@+id/moviePosterIV"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/movieReleaseDateLabel"

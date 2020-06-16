@@ -9,9 +9,9 @@ import io.reactivex.subjects.PublishSubject
 import labs.mamangkompii.mymoviesbook.di.annotation.ActivityScope
 import labs.mamangkompii.mymoviesbook.di.annotation.ComputationScheduler
 import labs.mamangkompii.mymoviesbook.di.annotation.Params
-import labs.mamangkompii.mymoviesbook.presenter.moviedetail.MovieReviewPagedListDataSourceFactory
-import labs.mamangkompii.mymoviesbook.presenter.moviedetail.MovieReviewPresenter
-import labs.mamangkompii.mymoviesbook.presenter.moviedetail.MovieReviewPresenterImpl
+import labs.mamangkompii.mymoviesbook.presenter.moviedetail.*
+import labs.mamangkompii.mymoviesbook.usecase.moviedetail.GetMovieDetailUseCase
+import labs.mamangkompii.mymoviesbook.usecase.moviedetail.GetMovieDetailUseCaseImpl
 import labs.mamangkompii.mymoviesbook.usecase.moviedetail.GetMovieReviewsUseCase
 import labs.mamangkompii.mymoviesbook.usecase.moviedetail.GetMovieReviewsUseCaseImpl
 
@@ -20,7 +20,15 @@ interface MovieDetailsModule {
 
     @ActivityScope
     @Binds
+    fun movieDetailsUseCase(getMovieDetailUseCaseImpl: GetMovieDetailUseCaseImpl): GetMovieDetailUseCase
+
+    @ActivityScope
+    @Binds
     fun movieReviewsUseCase(movieReviewsUseCaseImpl: GetMovieReviewsUseCaseImpl): GetMovieReviewsUseCase
+
+    @ActivityScope
+    @Binds
+    fun movieDetailsPresenter(movieDetailPresenterImpl: MovieDetailPresenterImpl): MovieDetailPresenter
 
     @ActivityScope
     @Binds
@@ -31,7 +39,7 @@ interface MovieDetailsModule {
         @ActivityScope
         @Provides
         fun movieReviewPagedListDataSourceFactory(
-            @Params("movieId") movieId: String,
+            @Params("movieId") movieId: Int,
             getMovieReviewsUseCase: GetMovieReviewsUseCase,
             @ComputationScheduler scheduler: Scheduler
         ): MovieReviewPagedListDataSourceFactory {
