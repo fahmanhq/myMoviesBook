@@ -23,7 +23,6 @@ class MovieDetailPresenterImpl @Inject constructor(
     override fun requestDetail(movieId: Int) {
         compositeDisposable.add(
             getMovieDetailUseCase.getMovieDetail(movieId)
-                .subscribeOn(Schedulers.computation())
                 .observeOn(mainScheduler)
                 .doOnSubscribe {
                     view.showLoadingMovieDetail()
@@ -42,7 +41,15 @@ class MovieDetailPresenterImpl @Inject constructor(
         )
     }
 
-    override fun addMovieAsFavorite() {
+    override fun onFavoriteButtonClick() {
+        if (movieDetail!!.isFavorited) {
+            removeMovieFromFavorite()
+        } else {
+            addMovieAsFavorite()
+        }
+    }
+
+    private fun addMovieAsFavorite() {
         compositeDisposable.add(
             favoriteMovieUseCase.addMovieAsFavorite(movieDetail!!)
                 .observeOn(mainScheduler)
@@ -59,7 +66,7 @@ class MovieDetailPresenterImpl @Inject constructor(
         )
     }
 
-    override fun removeMovieFromFavorite() {
+    private fun removeMovieFromFavorite() {
         compositeDisposable.add(
             favoriteMovieUseCase.removeMovieFromFavorite(movieDetail!!.id)
                 .observeOn(mainScheduler)
@@ -74,14 +81,6 @@ class MovieDetailPresenterImpl @Inject constructor(
                     view.showErrorRemoveMovieFromFavorite()
                 })
         )
-    }
-
-    override fun onFavoriteButtonClick() {
-        if (movieDetail!!.isFavorited) {
-            removeMovieFromFavorite()
-        } else {
-            addMovieAsFavorite()
-        }
     }
 
     override fun onDestroy() {
